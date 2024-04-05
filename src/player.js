@@ -1,22 +1,34 @@
-const createPlayerFactory = (function() {
+const createPlayerFactory = (function () {
   let playerIdCounter = 0;
 
-  return function(name = `Player${playerIdCounter}`, sign) {
+  return function (name = `Player${playerIdCounter}`, symbol) {
     const playerId = playerIdCounter++;
-    return {
+    const player = {
       id: playerId,
       name,
-      sign
+      symbol,
     };
+
+    function getId() {
+      return player.id;
+    }
+
+    function getName() {
+      return player.name;
+    }
+
+    function getSymbol() {
+      return player.symbol;
+    }
+
+    return { getId, getName, getSymbol };
   };
 })();
 
 export const createPlayer = createPlayerFactory;
 
-const masha = createPlayer("Masha", 'x');
-console.log(masha);
+// const masha = Player("Masha", 'x');
+// console.log(masha.getName());
 
-const nata = createPlayer('Nata', 'o');
-console.log(nata);
-
-
+// const nata = Player('Nata', 'o');
+// console.log(nata.getName());

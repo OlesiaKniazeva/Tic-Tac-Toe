@@ -1,10 +1,13 @@
 {
   "name": "tic-tac-toe",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "game.js",
   "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "jest": {
+    "transform": {}
   },
   "keywords": [],
   "author": "",
@@ -12,6 +15,7 @@
   "description": "",
   "devDependencies": {
     "eslint": "^8.57.0",
+    "eslint-plugin-jest": "^27.9.0",
     "jest": "^29.7.0"
   }
 }

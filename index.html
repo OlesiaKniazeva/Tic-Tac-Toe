@@ -3,10 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="src/game.js" defer></script>
+    <title>Tik-Tak-Toe Game</title>
+    <script src="src/dom.js" defer></script>
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
+    <h1>Tik-Tak-Toe Game</h1>
+    <div class="users-container">
+      <div class="first-user">
+        <label for="first-user"></label>
+        <input type="text" name="first-user" id="first-user" value="First User">
+      </div>
+      <div class="second-user">
+        <label for="second-user"></label>
+        <input type="text" name="second-user" id="second-user" value="Second User">
+      </div>
+    </div>
+    <div class="user-turn-message"></div>
+    <div class="board-container">
+      <button id="0-0" class="board-cell"></button>
+      <button id="0-1" class="board-cell"></button>
+      <button id="0-2" class="board-cell"></button>
+      <button id="1-0" class="board-cell"></button>
+      <button id="1-1" class="board-cell"></button>
+      <button id="1-2" class="board-cell"></button>
+      <button id="2-0" class="board-cell"></button>
+      <button id="2-1" class="board-cell"></button>
+      <button id="2-2" class="board-cell"></button>
+    </div>
+    <button class="start-game">Restart Game</button>
   </body>
 </html>

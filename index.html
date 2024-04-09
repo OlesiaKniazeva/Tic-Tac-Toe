@@ -4,19 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tik-Tak-Toe Game</title>
-    <script src="src/dom.js" defer></script>
+    <script  type="module" src="src/dom.js" defer></script>
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
     <h1>Tik-Tak-Toe Game</h1>
     <div class="users-container">
-      <div class="first-user">
-        <label for="first-user"></label>
-        <input type="text" name="first-user" id="first-user" value="First User">
+      <div class="first-user active-user user">
+        <button class="user-symbol first active-user">×</button>
+        <label for="first-user">First Player Name</label>
+        <input type="text" name="first-user" id="first-user" placeholder="Player1">
       </div>
-      <div class="second-user">
-        <label for="second-user"></label>
-        <input type="text" name="second-user" id="second-user" value="Second User">
+      <div class="second-user user">
+        <button class="user-symbol second">o</button>
+        <label for="second-user">Second Player Name</label>
+        <input type="text" name="second-user" id="second-user" placeholder="Player2">
       </div>
     </div>
     <div class="user-turn-message"></div>
@@ -31,6 +33,6 @@
       <button id="2-1" class="board-cell"></button>
       <button id="2-2" class="board-cell"></button>
     </div>
-    <button class="start-game">Restart Game</button>
+    <button class="restart-game">Restart Game</button>
   </body>
 </html>

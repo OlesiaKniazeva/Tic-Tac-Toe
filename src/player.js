@@ -27,7 +27,7 @@ const createPlayerFactory = (function () {
 
 export const createPlayer = createPlayerFactory;
 
-// const masha = Player("Masha", 'x');
+// const masha = Player("Masha", '×');
 // console.log(masha.getName());
 
 // const nata = Player('Nata', 'o');

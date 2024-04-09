@@ -70,9 +70,7 @@ describe("createBoard", () => {
     board.updateBoard([2, 2], cell);
 
     let rows = board.getRows([1, 1]);
-    console.log(rows);
-    console.log(board.getBoardDisplay());
-
+    
     const expectedRows = [
       ["*", "x", "*"],
       ["*", "x", "*"],

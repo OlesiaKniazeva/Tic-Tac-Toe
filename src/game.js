@@ -2,14 +2,17 @@ import { createPlayer } from "./player.js";
 import { createBoard, createCell } from "./board.js";
 
 const gameController = (function () {
-
   const board = createBoard;
-  const player1 = createPlayer("Masha", "x");
-  const player2 = createPlayer("Nata", "o");
+  let player1;
+  let player2;
 
-  let activePlayer = player1;
+  let activePlayer = null;
   let winner = null;
   let gameState = "playing";
+
+  function getActivePlayer() {
+    return activePlayer;
+  }
 
   function changeActivePlayer() {
     activePlayer = activePlayer === player1 ? player2 : player1;
@@ -27,16 +30,19 @@ const gameController = (function () {
     }
   }
 
-  function reset() {
+  function resetGame() {
     winner = null;
     gameState = "playing";
-    activePlayer = player1
     board.resetBoard();
   }
 
-  function startNewGame() {
-    reset();
-    startTheGame();
+  function startNewGame(player1Name = "Player1", player2Name = "Player2", activePlayerName = player1Name) {
+    player1 = createPlayer(player1Name, "×");
+    player2 = createPlayer(player2Name, "o");
+    activePlayer = (activePlayerName === player1Name) ? player1 : player2;
+    console.log(activePlayer.getName(), activePlayer.getId(), activePlayer.getSymbol());
+    
+    resetGame();
   }
 
   function hasThreeInRow(rows, symbol) {
@@ -61,56 +67,50 @@ const gameController = (function () {
   }
 
   function isDraw() {
-    return board.getFilledCellsAmount === board.getMaxCellsAmount;
+    return board.getFilledCellsAmount() === board.getMaxCellsAmount();
   }
 
-  function sendPlayerChoice() {
+  function checkCoordinatesData(coordinates) {
+    if (!Array.isArray(coordinates) || coordinates.length !== 2) {
+      throw new Error(
+        "Invalid coordinates: must be an array with two elements"
+      );
+    }
 
-  }
-
-  function playRound() {
-        let answer = sendPlayerChoice();
-        let cellCoordinates = answer.split(" ").map((el) => Number(el));
-        let cell = createCell();
-        cell.setSymbol(activePlayer.getSymbol());
-        board.updateBoard(cellCoordinates, cell);
-
-        if (isWinningMove(cellCoordinates, cell.getSymbol())) {
-          winner = activePlayer;
-          gameState = "won";
-          return;
-        } else if (isDraw()) {
-          gameState = "draw";
-          return;
-        } else {
-          changeActivePlayer();
-          playRound();
-        }
-
-        console.log(board.getBoardDisplay());
-  }
-
-  function startTheGame() {
-    console.log("Start The Game");
-    console.log(board.getBoardDisplay());
-    console.log(
-      `We have two players: ${player1.getName()} and ${player2.getName()}`
-    );
-    console.log(`It's ${player1.getName()}'s turn to choose!`);
-    playRound();
-    console.log("Game results ", gameState, winner);
-    if (isGameOver()) {
-      console.log(board.getBoardDisplay());
-      console.log("Game results ", gameState, winner);
-
-      
-      showGameResults();
-      // startNewGame();
+    if (
+      typeof coordinates[0] !== "number" ||
+      typeof coordinates[1] !== "number"
+    ) {
+      throw new Error("Invalid coordinates: both elements must be numbers");
     }
   }
 
-  return { startNewGame, sendPlayerChoice, isGameOver, showGameResults, playRound };
+  function playRound(cellCoordinates) {
+    checkCoordinatesData(cellCoordinates);
+    let cell = createCell();
+    cell.setSymbol(activePlayer.getSymbol());
+    board.updateBoard(cellCoordinates, cell);
+
+    if (isWinningMove(cellCoordinates, cell.getSymbol())) {
+      winner = activePlayer;
+      gameState = "won";
+    } else if (isDraw()) {
+      gameState = "draw";
+    }
+    
+    changeActivePlayer();
+
+    // console.log(board.getBoardDisplay());
+  }
+
+  return {
+    startNewGame,
+    isGameOver,
+    showGameResults,
+    playRound,
+    getActivePlayer,
+  };
 })();
 
 export const game = gameController;
-game.startTheGame();
+// game.startNewGame();

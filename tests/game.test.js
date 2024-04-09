@@ -1,27 +1,40 @@
-import { createBoard, createCell } from "../src/board";
-import { createPlayer } from '../src/player';
 import { game } from "../src/game";
 
-jest.mock('../src/game', () => ({
-  ...jest.requireActual('../src/game',),
-  getPlayerChoice: jest.fn(),
-}));
+describe("game-tests", () => {
+  it("should declare the active player as the winner if they make a winning move", () => {
+    game.startNewGame();
+    expect(game.getActivePlayer().getName()).toBe("Player1");
+    expect(game.isGameOver()).toBe(false);
 
-beforeEach(() => {
-  game.reset();
-});
+    game.playRound([0, 0]);
+    expect(game.getActivePlayer().getName()).toBe("Player2");
+    expect(game.isGameOver()).toBe(false);
+    game.playRound([1, 0]);
+    expect(game.getActivePlayer().getName()).toBe("Player1");
+    expect(game.isGameOver()).toBe(false);
+    game.playRound([1, 1]);
+    expect(game.getActivePlayer().getName()).toBe("Player2");
+    expect(game.isGameOver()).toBe(false);
+    game.playRound([1, 2]);
+    expect(game.getActivePlayer().getName()).toBe("Player1");
+    expect(game.isGameOver()).toBe(false);
+    game.playRound([2, 2]);
+    expect(game.isGameOver()).toBe(true);
+  });
 
+  it("should declare a draw if all cells are filled and no player has won", () => {
+    game.startNewGame();
 
-
-it('should declare the active player as the winner if they make a winning move', () => {
-  game.getPlayerChoice()
-    .mockReturnValueOnce('0 0')  
-    .mockReturnValueOnce('0 1')
-    .mockReturnValueOnce('1 1')
-    .mockReturnValueOnce('0 2')
-    .mockReturnValueOnce('2 2');
-
-  game.startTheGame();
-
-  expect
+    game.playRound([0, 0]);
+    game.playRound([0, 1]);
+    game.playRound([0, 2]);
+    game.playRound([1, 0]);
+    game.playRound([1, 2]);
+    game.playRound([1, 1]);
+    game.playRound([2, 0]);
+    game.playRound([2, 2]);
+    expect(game.isGameOver()).toBe(false);
+    game.playRound([2, 1]);
+    expect(game.isGameOver()).toBe(true);
+  });
 });

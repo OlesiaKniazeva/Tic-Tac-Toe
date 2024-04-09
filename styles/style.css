@@ -168,9 +168,13 @@ button.restart-game:active {
   border-radius: 10px;
 }
 
+.user {
+  border-bottom: 7px solid white;
+}
+
 .user.active-user {
   border-bottom: 7px solid var(--active-user-color);
-  transition: border-bottom 0.7s ease;
+  transition: border-bottom-color 0.7s ease;
 }
 
 button.user {

@@ -37,7 +37,7 @@ const displayController = (function () {
   }
 
   function getTurnMessage(userName) {
-    return  `It's ${userName} turn`
+    return `It's ${userName} turn`;
   }
 
   function changeNameAndMessage(event) {
@@ -65,7 +65,7 @@ const displayController = (function () {
   }
 
   function getFirstUserName() {
-    const player1Name = player1Input.value  || "Player1";
+    const player1Name = player1Input.value || "Player1";
 
     return player1Name;
   }
@@ -85,53 +85,72 @@ const displayController = (function () {
     player2Button.disabled = true;
   }
 
-
   function enableUsersButtons() {
     player1Button.disabled = false;
     player2Button.disabled = false;
   }
 
   function getActivePlayerName() {
-    return (player1Button.classList.contains('active-user')) ? getFirstUserName() : getSecondUserName();
+    return player1Container.classList.contains("active-user")
+      ? getFirstUserName()
+      : getSecondUserName();
   }
 
   function resetDisplay() {
     boardCells.forEach((boardCell) => {
       boardCell.disabled = false;
-      boardCell.textContent = "";
+      boardCell.classList.remove('first-user-symbol', 'second-user-symbol');
     });
   }
 
-  function toggleActiveUser(button) {
-    if (button.classList.contains("active-user")) {
+  function toggleActiveUser(container) {
+    console.log(container);
+    
+    if (container.classList.contains("active-user")) {
       return;
-    } else if (button.classList.contains("first")) {
-      player2Button.classList.remove("active-user");
-      player2Container.classList.remove("active-user");
-    } else {
-      player1Button.classList.remove("active-user");
-      player1Container.classList.remove("active-user");
     }
-    button.classList.add("active-user");
-    button.parentNode.classList.add("active-user");
+      player2Container.classList.remove("active-user");
+      player1Container.classList.remove("active-user");
+
+    container.classList.add("active-user");
   }
 
   function setUsersMessage(message) {
     // messageToUsers.textContent = message;
-    messageToUsers.style.opacity = '0';
-  setTimeout(() => {
-    messageToUsers.textContent = message;
-    messageToUsers.style.opacity = '1';
-  }, 120);
+    messageToUsers.style.opacity = "0";
+    setTimeout(() => {
+      messageToUsers.textContent = message;
+      messageToUsers.style.opacity = "1";
+    }, 120);
   }
 
   function updateActivePlayerInInterface(activePlayerName) {
     if (activePlayerName === getFirstUserName()) {
-        toggleActiveUser(player1Button);
+      toggleActiveUser(player1Container);
     } else {
-        toggleActiveUser(player2Button);
+      toggleActiveUser(player2Container);
     }
-}
+  }
+
+  function showSymbol(button, symbol) {
+    console.log(symbol);
+    
+    if (symbol === "x") {
+      button.classList.add("first-user-symbol");
+    } else if (symbol === "o") {
+      button.classList.add("second-user-symbol");
+    }
+  }
+
+  function drawWinningLine(coordinate1, coordinate2) {
+
+  }
+
+  function resetActivePlayer() {
+    player2Container.classList.remove("active-user");
+    player1Container.classList.remove("active-user");
+    player1Container.classList.add("active-user");
+  }
 
   function processClicks(event) {
     const firstName = getFirstUserName();
@@ -140,7 +159,7 @@ const displayController = (function () {
     console.log(event.target);
 
     if (event.target.classList.contains("user-symbol")) {
-      toggleActiveUser(event.target);
+      toggleActiveUser(event.target.parentNode);
       if (event.target.classList.contains("first")) {
         setUsersMessage(getTurnMessage(getFirstUserName()));
       } else if (event.target.classList.contains("second")) {
@@ -151,7 +170,10 @@ const displayController = (function () {
     if (event.target.classList.contains("restart-game")) {
       console.log("restart-the-game");
 
+      resetActivePlayer();
       let activePlayerName = getActivePlayerName();
+      console.log(activePlayerName);
+      setUsersMessage(getTurnMessage(activePlayerName))
       game.startNewGame(firstName, secondName, activePlayerName);
       gameStarted = false;
       enableUsersInputs();
@@ -171,13 +193,14 @@ const displayController = (function () {
       const cellID = event.target.id;
       const cellCoordinates = cellID.split("-").map(Number);
 
-
       let player = game.getActivePlayer();
-      console.log(player.getId(), player.getName());
-      
-      event.target.textContent = player.getSymbol();
+      console.log(player.getId(), player.getName(), player.getSymbol());
+
+      showSymbol(event.target, player.getSymbol());
+
+      // event.target.textContent = player.getSymbol();
       console.log(player.getSymbol());
-      
+
       event.target.disabled = true;
       console.log(player);
 
@@ -186,10 +209,12 @@ const displayController = (function () {
       let newActivePlayerName = game.getActivePlayer().getName();
       updateActivePlayerInInterface(newActivePlayerName);
       setUsersMessage(getTurnMessage(newActivePlayerName));
-      
 
       if (game.isGameOver()) {
         console.log("Game finished");
+        let gameData = game.getGameResults();
+        console.log(gameData);
+        
       }
     }
   }

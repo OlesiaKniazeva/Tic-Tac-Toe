@@ -8,6 +8,7 @@ const gameController = (function () {
 
   let activePlayer = null;
   let winner = null;
+  let winningCoordinates = null;
   let gameState = "playing";
 
   function getActivePlayer() {
@@ -22,11 +23,11 @@ const gameController = (function () {
     return gameState === "draw" || gameState === "won";
   }
 
-  function showGameResults() {
+  function getGameResults() {
     if (gameState === "won") {
-      console.log(`Winner of this game is ${winner}`);
+      return {gameState, winner, winningCoordinates};
     } else if (gameState === "draw") {
-      console.log("It's a draw!");
+      return {gameState};
     }
   }
 
@@ -37,7 +38,7 @@ const gameController = (function () {
   }
 
   function startNewGame(player1Name = "Player1", player2Name = "Player2", activePlayerName = player1Name) {
-    player1 = createPlayer(player1Name, "×");
+    player1 = createPlayer(player1Name, "x");
     player2 = createPlayer(player2Name, "o");
     activePlayer = (activePlayerName === player1Name) ? player1 : player2;
     console.log(activePlayer.getName(), activePlayer.getId(), activePlayer.getSymbol());
@@ -45,25 +46,20 @@ const gameController = (function () {
     resetGame();
   }
 
-  function hasThreeInRow(rows, symbol) {
+  function getWinningCoordinates(rows, symbol) {
     for (let row of rows) {
-      if (row.every((cellSymbol) => cellSymbol === symbol)) {
-        return true;
+      if (row.every((cell) => cell.symbol === symbol)) {
+        return { start: row[0].coordinates, end: row[row.length - 1].coordinates };
       }
     }
-    return false;
+    return null;
   }
 
   function isWinningMove(cellCoordinates, symbol) {
-    // console.log(cellCoordinates, symbol);
 
-    const rows = board.getRows(cellCoordinates);
-    // console.log(rows);
+    const rows = board.getRowsWithCoordinates(cellCoordinates);
 
-    if (hasThreeInRow(rows, symbol)) {
-      return true;
-    }
-    return false;
+    return getWinningCoordinates(rows, symbol);
   }
 
   function isDraw() {
@@ -90,27 +86,27 @@ const gameController = (function () {
     let cell = createCell();
     cell.setSymbol(activePlayer.getSymbol());
     board.updateBoard(cellCoordinates, cell);
-
-    if (isWinningMove(cellCoordinates, cell.getSymbol())) {
+    
+    let coordinates = isWinningMove(cellCoordinates, cell.getSymbol())
+    if (coordinates) {
       winner = activePlayer;
       gameState = "won";
+      winningCoordinates = coordinates;
     } else if (isDraw()) {
       gameState = "draw";
     }
     
     changeActivePlayer();
 
-    // console.log(board.getBoardDisplay());
   }
 
   return {
     startNewGame,
     isGameOver,
-    showGameResults,
+    getGameResults,
     playRound,
     getActivePlayer,
   };
 })();
 
 export const game = gameController;
-// game.startNewGame();

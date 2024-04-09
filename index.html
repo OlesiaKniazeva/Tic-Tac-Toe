@@ -11,12 +11,16 @@
     <h1>Tik-Tak-Toe Game</h1>
     <div class="users-container">
       <div class="first-user active-user user">
-        <button class="user-symbol first active-user">×</button>
+        <button class="user-symbol first">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  width="60" height="60"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>
+        </button>
         <label for="first-user">First Player Name</label>
         <input type="text" name="first-user" id="first-user" placeholder="Player1">
       </div>
       <div class="second-user user">
-        <button class="user-symbol second">o</button>
+        <button class="user-symbol second">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  width="60" height="60"><path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>
+        </button>
         <label for="second-user">Second Player Name</label>
         <input type="text" name="second-user" id="second-user" placeholder="Player2">
       </div>
@@ -32,6 +36,9 @@
       <button id="2-0" class="board-cell"></button>
       <button id="2-1" class="board-cell"></button>
       <button id="2-2" class="board-cell"></button>
+      <div class="game-over-screen">
+        <p class="game-over-message"></p>
+      </div>
     </div>
     <button class="restart-game">Restart Game</button>
   </body>

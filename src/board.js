@@ -20,31 +20,29 @@ export const createBoard = (function () {
     return maxCellsAmount;
   };
 
-  const getBoardDisplay = () => {
-    let data = board.map((row) => row.map((cell) => cell.getSymbol()).join(" "));
-    return data.join("\n");
-  };
-
-  const getRows = (cellCoordinates) => {
+  const getRowsWithCoordinates = (cellCoordinates) => {
     const [x, y] = cellCoordinates;
 
-    let horisontalRow = board[x].map(cell => cell.getSymbol());
-    let verticalRow = board.map(row => row[y].getSymbol());
+    let horisontalRow = board[x].map((cell, index) => ({
+      symbol: cell.getSymbol(),
+      coordinates: [x, index],
+    }));
+    let verticalRow = board.map((row, index) => ({ symbol: row[y].getSymbol(), coordinates: [index, y] }));
 
     let rows = [horisontalRow, verticalRow];
 
     if (x === y) {
-      const diagonalFromLeftTop = board.map((row, index) => row[index].getSymbol());
+      const diagonalFromLeftTop = board.map((row, index) => ({ symbol: row[index].getSymbol(), coordinates: [index, index] }));
       rows.push(diagonalFromLeftTop);
     }
-  
+
     if (x + y === boardSide - 1) {
-      const diagonalFromRightTop = board.map((row, index) => row[boardSide - 1 - index].getSymbol());
+      const diagonalFromRightTop = board.map((row, index) => ({ symbol: row[boardSide - 1 - index].getSymbol(), coordinates: [index, boardSide - 1 - index] }));
       rows.push(diagonalFromRightTop);
     }
-  
+
     return rows;
-  }
+  };
 
   const getRawBoard = () => {
     return board;
@@ -57,29 +55,28 @@ export const createBoard = (function () {
       cellCoordinates[0] > boardSide ||
       cellCoordinates[1] > boardSide
     ) {
-      throw Error('Passing invalid cell coordinate');
+      throw Error("Passing invalid cell coordinate");
     }
-      board[cellCoordinates[0]][cellCoordinates[1]] = cell;
+    board[cellCoordinates[0]][cellCoordinates[1]] = cell;
     filledCellsAmount++;
   };
 
   const resetBoard = () => {
-    board.forEach(row => {
-      row.forEach(cell => {
+    board.forEach((row) => {
+      row.forEach((cell) => {
         cell.resetCell();
       });
     });
     filledCellsAmount = 0;
-  }
+  };
 
   return {
-    getBoardDisplay,
     updateBoard,
     getFilledCellsAmount,
     getMaxCellsAmount,
     getRawBoard,
-    getRows,
-    resetBoard
+    getRowsWithCoordinates,
+    resetBoard,
   };
 })();
 
@@ -94,7 +91,7 @@ export function createCell() {
 
   const resetCell = () => {
     symbol = null;
-  }
+  };
 
   return { getSymbol, setSymbol, resetCell };
 }

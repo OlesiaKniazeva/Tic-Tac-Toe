@@ -14,7 +14,6 @@
   --main-buttons-color: white;
 }
 
-
 html {
   box-sizing: border-box;
 }
@@ -37,6 +36,8 @@ body {
 /* board display */
 
 .board-container {
+  position:relative;
+  
   display: grid;
   grid-template-columns: repeat(3, var(--cell-size));
   grid-template-rows: repeat(3, var(--cell-size));
@@ -44,24 +45,12 @@ body {
   background-color: var(--main-color);
 }
 
-/* .board-cell.x-symbol {
-  background-image: url("");
-} */
-
-/* .board-cell::before {
-  content: "";
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-} */
-
 .board-cell {
   display: flex;
   justify-content: center;
   align-items: center;
 
   font-size: 12rem;
-  /* overflow:auto; */
   font-weight: 300;
   font-family: "Fredoka", "Arial Rounded MT Bold", "Comic Sans MS", sans-serif;
   margin: 0;
@@ -113,7 +102,6 @@ button.restart-game:active {
   opacity: 1;
 }
 
-
 /* users display */
 
 .users-container {
@@ -163,7 +151,7 @@ button.restart-game:active {
 
 .first-user .user-symbol,
 .second-user .user-symbol {
-  padding: 0 20px;
+  padding: 8px;
   border: none;
   border-radius: 10px;
 }
@@ -181,19 +169,64 @@ button.user {
   cursor: pointer;
 }
 
-button.active-user {
+.user.active-user button {
   background-color: var(--active-user-color);
   transition: background-color 0.7s ease;
 }
 
-button.active-user:hover {
+.user.active-user button:hover {
   background-color: var(--active-user-hover);
 }
 
-button.active-user:active {
+.user.active-user button:active {
   background-color: var(--active-user-color);
 }
 
-.user-symbol:not(.active-user):hover {
+.user:not(.active-user) button:hover {
   background-color: #ddd;
+}
+
+button.user-symbol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button.user-symbol svg {
+  stroke-width: 1;
+  stroke: black;
+  pointer-events: none;
+}
+
+/* Icons */
+
+.first-user-symbol {
+  background-image: url('../images/x-symbol.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 150px 150px; 
+}
+
+.second-user-symbol {
+  background-image: url('../images/o-symbol.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 120px 120px; 
+}
+
+/* Results Screen */
+
+.game-over-screen {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 2em;
 }

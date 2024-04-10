@@ -18,6 +18,8 @@ const displayController = (function () {
   let boardCells;
   let messageToUsers;
 
+  let gameOverScreen;
+
   function initEventListeners() {
     const body = document.body;
     boardCells = document.querySelectorAll(".board-container .board-cell");
@@ -29,6 +31,8 @@ const displayController = (function () {
     player2Button = document.querySelector(".second-user .user-symbol");
     player1Container = document.querySelector(".user.first-user");
     player2Container = document.querySelector(".user.second-user");
+
+    gameOverScreen = document.querySelector(".game-over-screen");
 
     setUsersMessage(initialMessage);
 
@@ -99,24 +103,23 @@ const displayController = (function () {
   function resetDisplay() {
     boardCells.forEach((boardCell) => {
       boardCell.disabled = false;
-      boardCell.classList.remove('first-user-symbol', 'second-user-symbol');
+      boardCell.classList.remove("first-user-symbol", "second-user-symbol");
     });
   }
 
   function toggleActiveUser(container) {
     console.log(container);
-    
+
     if (container.classList.contains("active-user")) {
       return;
     }
-      player2Container.classList.remove("active-user");
-      player1Container.classList.remove("active-user");
+    player2Container.classList.remove("active-user");
+    player1Container.classList.remove("active-user");
 
     container.classList.add("active-user");
   }
 
   function setUsersMessage(message) {
-    // messageToUsers.textContent = message;
     messageToUsers.style.opacity = "0";
     setTimeout(() => {
       messageToUsers.textContent = message;
@@ -133,8 +136,6 @@ const displayController = (function () {
   }
 
   function showSymbol(button, symbol) {
-    console.log(symbol);
-    
     if (symbol === "x") {
       button.classList.add("first-user-symbol");
     } else if (symbol === "o") {
@@ -142,14 +143,78 @@ const displayController = (function () {
     }
   }
 
-  function drawWinningLine(coordinate1, coordinate2) {
-
-  }
+  function drawWinningLine(coordinate1, coordinate2) {}
 
   function resetActivePlayer() {
     player2Container.classList.remove("active-user");
     player1Container.classList.remove("active-user");
     player1Container.classList.add("active-user");
+  }
+
+  function changeActiveUser(userSwitchButton) {
+    toggleActiveUser(userSwitchButton.parentNode);
+    if (userSwitchButton.classList.contains("first")) {
+      setUsersMessage(getTurnMessage(getFirstUserName()));
+    } else if (userSwitchButton.classList.contains("second")) {
+      setUsersMessage(getTurnMessage(getSecondUserName()));
+    }
+  }
+
+  function restartGame(firstName, secondName) {
+    console.log("restart-the-game");
+
+    resetActivePlayer();
+    let activePlayerName = getActivePlayerName();
+    console.log(activePlayerName);
+    setUsersMessage(getTurnMessage(activePlayerName));
+    game.startNewGame(firstName, secondName, activePlayerName);
+    gameStarted = false;
+    enableUsersInputs();
+    enableUsersButtons();
+    resetDisplay();
+  }
+
+  function startGame(firstName, secondName) {
+    let activePlayerName = getActivePlayerName();
+
+    gameStarted = true;
+    disableUsersInputs();
+    disableUsersButtons();
+    game.startNewGame(firstName, secondName, activePlayerName);
+  }
+
+  function finishGame() {
+    console.log("Game finished");
+    let gameData = game.getGameResults();
+    console.log(gameData);
+  }
+
+  function playGame(cellButton, firstName, secondName) {
+    if (!gameStarted) {
+      startGame(firstName, secondName);
+    }
+    const cellID = cellButton.id;
+    const cellCoordinates = cellID.split("-").map(Number);
+
+    let player = game.getActivePlayer();
+    console.log(player.getId(), player.getName(), player.getSymbol());
+
+    showSymbol(cellButton, player.getSymbol());
+
+    console.log(player.getSymbol());
+
+    cellButton.disabled = true;
+    console.log(player);
+
+    game.playRound(cellCoordinates);
+
+    let newActivePlayerName = game.getActivePlayer().getName();
+    updateActivePlayerInInterface(newActivePlayerName);
+    setUsersMessage(getTurnMessage(newActivePlayerName));
+
+    if (game.isGameOver()) {
+      finishGame();
+    }
   }
 
   function processClicks(event) {
@@ -159,63 +224,11 @@ const displayController = (function () {
     console.log(event.target);
 
     if (event.target.classList.contains("user-symbol")) {
-      toggleActiveUser(event.target.parentNode);
-      if (event.target.classList.contains("first")) {
-        setUsersMessage(getTurnMessage(getFirstUserName()));
-      } else if (event.target.classList.contains("second")) {
-        setUsersMessage(getTurnMessage(getSecondUserName()));
-      }
-    }
-
-    if (event.target.classList.contains("restart-game")) {
-      console.log("restart-the-game");
-
-      resetActivePlayer();
-      let activePlayerName = getActivePlayerName();
-      console.log(activePlayerName);
-      setUsersMessage(getTurnMessage(activePlayerName))
-      game.startNewGame(firstName, secondName, activePlayerName);
-      gameStarted = false;
-      enableUsersInputs();
-      enableUsersButtons();
-      resetDisplay();
-    }
-
-    if (event.target.classList.contains("board-cell")) {
-      if (!gameStarted) {
-        let activePlayerName = getActivePlayerName();
-
-        gameStarted = true;
-        disableUsersInputs();
-        disableUsersButtons();
-        game.startNewGame(firstName, secondName, activePlayerName);
-      }
-      const cellID = event.target.id;
-      const cellCoordinates = cellID.split("-").map(Number);
-
-      let player = game.getActivePlayer();
-      console.log(player.getId(), player.getName(), player.getSymbol());
-
-      showSymbol(event.target, player.getSymbol());
-
-      // event.target.textContent = player.getSymbol();
-      console.log(player.getSymbol());
-
-      event.target.disabled = true;
-      console.log(player);
-
-      game.playRound(cellCoordinates);
-
-      let newActivePlayerName = game.getActivePlayer().getName();
-      updateActivePlayerInInterface(newActivePlayerName);
-      setUsersMessage(getTurnMessage(newActivePlayerName));
-
-      if (game.isGameOver()) {
-        console.log("Game finished");
-        let gameData = game.getGameResults();
-        console.log(gameData);
-        
-      }
+      changeActiveUser(event.target);
+    } else if (event.target.classList.contains("restart-game")) {
+      restartGame(firstName, secondName);
+    } else if (event.target.classList.contains("board-cell")) {
+      playGame(event.target, firstName, secondName);
     }
   }
 

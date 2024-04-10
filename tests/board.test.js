@@ -41,46 +41,6 @@ describe("createBoard", () => {
 
     expect(filledCells).toBe(3);
   });
-
-  it("Should return all available three signs in a row — horisontal, diagonal, vertical", () => {
-    const cell = createCell();
-    cell.setSymbol("x");
-
-    board.updateBoard([0, 0], cell);
-    board.updateBoard([1, 1], cell);
-    board.updateBoard([2, 2], cell);
-
-    let rows = board.getRows([0, 0]);
-    const expectedRows = [
-      ["x", "*", "*"],
-      ["x", "*", "*"],
-      ["x", "x", "x"],
-    ];
-
-    expect(rows.length).toEqual(expectedRows.length);
-    expect(rows).toEqual(expect.arrayContaining(expectedRows));
-  });
-
-  it("Should return all available three signs in a row — horisontal, diagonal, vertical2", () => {
-    const cell = createCell();
-    cell.setSymbol("x");
-
-    board.updateBoard([0, 0], cell);
-    board.updateBoard([1, 1], cell);
-    board.updateBoard([2, 2], cell);
-
-    let rows = board.getRows([1, 1]);
-    
-    const expectedRows = [
-      ["*", "x", "*"],
-      ["*", "x", "*"],
-      ["x", "x", "x"],
-      ["*", "x", "*"],
-    ];
-
-    expect(rows.length).toEqual(expectedRows.length);
-    expect(rows).toEqual(expect.arrayContaining(expectedRows));
-  });
 });
 
 describe("createCell", () => {

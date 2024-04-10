@@ -136,6 +136,25 @@ button.restart-game:active {
   color: rgb(91, 91, 91);
 }
 
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000000;
+  -webkit-box-shadow: 0 0 0px 40rem #ffff inset;
+}
+
+input:-webkit-autofill:disabled {
+  -webkit-text-fill-color: rgb(75, 75, 75);
+  -webkit-box-shadow: 0 0 0px 40rem #f5f5f5 inset;
+}
+
+input[type="text"]:disabled {
+  color: rgb(75, 75, 75);
+  background-color: #f5f5f5;
+}
+
+
 .users-container .first-user,
 .users-container .second-user {
   display: grid;
@@ -264,7 +283,7 @@ button.user-symbol svg {
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 4rem;
+  font-size: 3.3rem;
 
   animation: slide-up 1s ease-out forwards;
   animation-delay: 1s;

@@ -19,9 +19,11 @@ const displayController = (function () {
   let messageToUsers;
 
   let gameOverScreen;
+  let boardContainer;
 
   function initEventListeners() {
     const body = document.body;
+    boardContainer = document.querySelector(".board-container");
     boardCells = document.querySelectorAll(".board-container .board-cell");
     messageToUsers = document.querySelector(".user-turn-message");
 
@@ -143,7 +145,60 @@ const displayController = (function () {
     }
   }
 
-  function drawWinningLine(coordinate1, coordinate2) {}
+  function getCoordinate(rectangleData, boardRectData) {
+    const x = rectangleData.left + rectangleData.width / 2 - boardRectData.left;
+    const y = rectangleData.top + rectangleData.height / 2 - boardRectData.top;
+
+    return [x, y];
+  }
+
+  function drawWinningLine(startButtonCoordinate, endButtonCoordinate) {
+    console.log(startButtonCoordinate, endButtonCoordinate);
+    const buttonStartID = startButtonCoordinate.join("-");
+    const buttonEndID = endButtonCoordinate.join("-");
+
+    const buttonStart = document.getElementById(buttonStartID);
+    const buttonEnd = document.getElementById(buttonEndID);
+    console.log(buttonStart);
+    console.log(buttonEnd);
+
+    const rectStart = buttonStart.getBoundingClientRect();
+    const rectEnd = buttonEnd.getBoundingClientRect();
+    const boardRectData = boardContainer.getBoundingClientRect();
+    console.log("board-rect", boardRectData);
+
+    console.log(rectStart);
+    console.log(rectEnd);
+
+    const [x1, y1] = getCoordinate(rectStart, boardRectData);
+    const [x2, y2] = getCoordinate(rectEnd, boardRectData);
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "100%");
+    svg.setAttribute("height", "100%");
+    svg.style.position = "absolute";
+    svg.style.top = 0;
+    svg.style.left = 0;
+    svg.style.pointerEvents = "none";
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("stroke", "red");
+    line.setAttribute("stroke-width", 10);
+
+    svg.appendChild(line);
+    boardContainer.appendChild(svg);
+    removeElementAfterSomeTime(svg, 2000);
+  }
+
+  function removeElementAfterSomeTime(element, delay) {
+    setTimeout(() => {
+      element.remove();
+    }, delay);
+  }
 
   function resetActivePlayer() {
     player2Container.classList.remove("active-user");
@@ -187,6 +242,15 @@ const displayController = (function () {
     console.log("Game finished");
     let gameData = game.getGameResults();
     console.log(gameData);
+
+    if (gameData.gameState === "won") {
+      drawWinningLine(
+        gameData.winningCoordinates.start,
+        gameData.winningCoordinates.end
+      );
+    } else if (gameData.gameState === "draw") {
+      console.log("pppp");
+    }
   }
 
   function playGame(cellButton, firstName, secondName) {

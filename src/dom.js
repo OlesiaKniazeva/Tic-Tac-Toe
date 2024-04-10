@@ -20,6 +20,7 @@ const displayController = (function () {
 
   let gameOverScreen;
   let boardContainer;
+  let winningLine;
 
   function initEventListeners() {
     const body = document.body;
@@ -49,16 +50,17 @@ const displayController = (function () {
   function changeNameAndMessage(event) {
     const player1Name = getFirstUserName();
     const player2Name = getSecondUserName();
+    const element = event.target;
 
     if (
-      event.target === player1Input &&
-      event.target.parentNode.classList.contains("active-user")
+      element === player1Input &&
+      element.parentNode.classList.contains("active-user")
     ) {
       setUsersMessage(getTurnMessage(player1Name));
     }
     if (
-      event.target === player2Input &&
-      event.target.parentNode.classList.contains("active-user")
+      element === player2Input &&
+      element.parentNode.classList.contains("active-user")
     ) {
       setUsersMessage(getTurnMessage(player2Name));
     }
@@ -174,12 +176,15 @@ const displayController = (function () {
     const [x2, y2] = getCoordinate(rectEnd, boardRectData);
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    winningLine = svg;
+
     svg.setAttribute("width", "100%");
     svg.setAttribute("height", "100%");
     svg.style.position = "absolute";
     svg.style.top = 0;
     svg.style.left = 0;
     svg.style.pointerEvents = "none";
+    svg.style.zIndex = 0;
 
     const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     line.setAttribute("x1", x1);
@@ -188,16 +193,17 @@ const displayController = (function () {
     line.setAttribute("y2", y2);
     line.setAttribute("stroke", "red");
     line.setAttribute("stroke-width", 10);
+    line.setAttribute("class", "draw-line");
 
     svg.appendChild(line);
     boardContainer.appendChild(svg);
-    removeElementAfterSomeTime(svg, 2000);
+    setTimeout(() => line.setAttribute("stroke-dashoffset", 0), 0);
   }
 
-  function removeElementAfterSomeTime(element, delay) {
-    setTimeout(() => {
+  function removeElement(element) {
+    if (element) {
       element.remove();
-    }, delay);
+    }
   }
 
   function resetActivePlayer() {
@@ -219,6 +225,7 @@ const displayController = (function () {
     console.log("restart-the-game");
 
     resetActivePlayer();
+    removeElement(winningLine);
     let activePlayerName = getActivePlayerName();
     console.log(activePlayerName);
     setUsersMessage(getTurnMessage(activePlayerName));
@@ -227,6 +234,12 @@ const displayController = (function () {
     enableUsersInputs();
     enableUsersButtons();
     resetDisplay();
+    gameOverScreen.style.display = 'none';
+  }
+
+  function showDrawMessage() {
+    gameOverScreen.style.display = 'flex';
+    gameOverScreen.textContent = "It's a Draw!"
   }
 
   function startGame(firstName, secondName) {
@@ -238,18 +251,34 @@ const displayController = (function () {
     game.startNewGame(firstName, secondName, activePlayerName);
   }
 
+  function disableActivePlayers() {
+    player2Container.classList.remove("active-user");
+    player1Container.classList.remove("active-user");
+  }
+
+  function showWinMessage(winner) {
+    console.log(winner);
+    
+    gameOverScreen.textContent = `${winner.getName()} Won!`
+    gameOverScreen.style.display = 'flex';
+  }
+
   function finishGame() {
     console.log("Game finished");
     let gameData = game.getGameResults();
     console.log(gameData);
+
+    setUsersMessage('Game Over');
+    disableActivePlayers();
 
     if (gameData.gameState === "won") {
       drawWinningLine(
         gameData.winningCoordinates.start,
         gameData.winningCoordinates.end
       );
+      showWinMessage(gameData.winner);
     } else if (gameData.gameState === "draw") {
-      console.log("pppp");
+      showDrawMessage();
     }
   }
 
@@ -285,14 +314,15 @@ const displayController = (function () {
     const firstName = getFirstUserName();
     const secondName = getSecondUserName();
 
-    console.log(event.target);
+    const element = event.target;
 
-    if (event.target.classList.contains("user-symbol")) {
-      changeActiveUser(event.target);
-    } else if (event.target.classList.contains("restart-game")) {
+    if (element.classList.contains("user-symbol")) {
+      changeActiveUser(element);
+    } else if (element.classList.contains("restart-game") || 
+    element.classList.contains('game-over-screen')) {
       restartGame(firstName, secondName);
-    } else if (event.target.classList.contains("board-cell")) {
-      playGame(event.target, firstName, secondName);
+    } else if (element.classList.contains("board-cell")) {
+      playGame(element, firstName, secondName);
     }
   }
 

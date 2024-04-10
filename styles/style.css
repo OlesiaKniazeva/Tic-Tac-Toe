@@ -6,11 +6,13 @@
 }
 
 :root {
-  --main-color: rgb(106, 101, 255);
+  --main-color: #6a65ff;
+  --x-symbol-color: #25b084;
+  --o-symbol-color: #de7f1a;
   --cell-size: 150px;
-  --active-user-color: rgb(245, 215, 19);
-  --active-user-hover: rgb(228, 200, 14);
-  --main-hover-color: rgb(249, 246, 255);
+  --active-user-color: #ffe647;
+  --active-user-hover: #e4c80e;
+  --main-hover-color: #f9f6ff;
   --main-buttons-color: white;
 }
 
@@ -36,8 +38,8 @@ body {
 /* board display */
 
 .board-container {
-  position:relative;
-  
+  position: relative;
+
   display: grid;
   grid-template-columns: repeat(3, var(--cell-size));
   grid-template-rows: repeat(3, var(--cell-size));
@@ -62,6 +64,10 @@ body {
 
 .board-container button {
   border: none;
+  background-color: var(--main-buttons-color);
+}
+
+.board-container button:disabled:hover {
   background-color: var(--main-buttons-color);
 }
 
@@ -194,39 +200,80 @@ button.user-symbol {
 
 button.user-symbol svg {
   stroke-width: 1;
-  stroke: black;
   pointer-events: none;
+}
+
+.first-user button.user-symbol svg {
+  fill: var(--x-symbol-color);
+  stroke: var(--x-symbol-color);
+}
+
+.second-user button.user-symbol svg {
+  fill: var(--o-symbol-color);
+  stroke: var(--o-symbol-color);
 }
 
 /* Icons */
 
-.first-user-symbol {
-  background-image: url('../images/x-symbol.svg');
+.board-container .first-user-symbol {
+  background-image: url("../images/x-symbol.svg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 150px 150px; 
+  background-size: 140px 140px;
 }
 
-.second-user-symbol {
-  background-image: url('../images/o-symbol.svg');
+.board-container .second-user-symbol {
+  background-image: url("../images/o-symbol.svg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 120px 120px; 
+  background-size: 120px 120px;
 }
 
 /* Results Screen */
 
 .game-over-screen {
   display: none;
+  opacity: 0;
   position: absolute;
+  z-index: 1;
+
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(241, 220, 220, 0.8);
+
+  background: var(--main-color);
   color: white;
+
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 2em;
+  font-size: 4rem;
+
+  animation: slide-up 1s ease-out forwards;
+  animation-delay: 1s;
+}
+
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* winning line */
+
+.draw-line {
+  transition: stroke-dashoffset 2s ease-out;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 1s forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }

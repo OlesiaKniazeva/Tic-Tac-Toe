@@ -112,8 +112,6 @@ const displayController = (function () {
   }
 
   function toggleActiveUser(container) {
-    console.log(container);
-
     if (container.classList.contains("active-user")) {
       return;
     }
@@ -155,22 +153,15 @@ const displayController = (function () {
   }
 
   function drawWinningLine(startButtonCoordinate, endButtonCoordinate) {
-    console.log(startButtonCoordinate, endButtonCoordinate);
     const buttonStartID = startButtonCoordinate.join("-");
     const buttonEndID = endButtonCoordinate.join("-");
 
     const buttonStart = document.getElementById(buttonStartID);
     const buttonEnd = document.getElementById(buttonEndID);
-    console.log(buttonStart);
-    console.log(buttonEnd);
 
     const rectStart = buttonStart.getBoundingClientRect();
     const rectEnd = buttonEnd.getBoundingClientRect();
     const boardRectData = boardContainer.getBoundingClientRect();
-    console.log("board-rect", boardRectData);
-
-    console.log(rectStart);
-    console.log(rectEnd);
 
     const [x1, y1] = getCoordinate(rectStart, boardRectData);
     const [x2, y2] = getCoordinate(rectEnd, boardRectData);
@@ -222,12 +213,9 @@ const displayController = (function () {
   }
 
   function restartGame(firstName, secondName) {
-    console.log("restart-the-game");
-
     resetActivePlayer();
     removeElement(winningLine);
     let activePlayerName = getActivePlayerName();
-    console.log(activePlayerName);
     setUsersMessage(getTurnMessage(activePlayerName));
     game.startNewGame(firstName, secondName, activePlayerName);
     gameStarted = false;
@@ -256,17 +244,13 @@ const displayController = (function () {
     player1Container.classList.remove("active-user");
   }
 
-  function showWinMessage(winner) {
-    console.log(winner);
-    
+  function showWinMessage(winner) {    
     gameOverScreen.textContent = `${winner.getName()} Won!`
     gameOverScreen.style.display = 'flex';
   }
 
   function finishGame() {
-    console.log("Game finished");
     let gameData = game.getGameResults();
-    console.log(gameData);
 
     setUsersMessage('Game Over');
     disableActivePlayers();
@@ -290,14 +274,10 @@ const displayController = (function () {
     const cellCoordinates = cellID.split("-").map(Number);
 
     let player = game.getActivePlayer();
-    console.log(player.getId(), player.getName(), player.getSymbol());
 
     showSymbol(cellButton, player.getSymbol());
 
-    console.log(player.getSymbol());
-
     cellButton.disabled = true;
-    console.log(player);
 
     game.playRound(cellCoordinates);
 

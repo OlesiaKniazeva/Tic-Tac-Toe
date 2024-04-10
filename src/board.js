@@ -95,6 +95,3 @@ export function createCell() {
 
   return { getSymbol, setSymbol, resetCell };
 }
-
-// const board = createBoard;
-// console.log(board.getBoardDisplay());

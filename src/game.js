@@ -41,7 +41,6 @@ const gameController = (function () {
     player1 = createPlayer(player1Name, "x");
     player2 = createPlayer(player2Name, "o");
     activePlayer = (activePlayerName === player1Name) ? player1 : player2;
-    console.log(activePlayer.getName(), activePlayer.getId(), activePlayer.getSymbol());
     
     resetGame();
   }
